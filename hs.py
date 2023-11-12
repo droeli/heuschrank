@@ -1,31 +1,42 @@
+import json
 import RPi.GPIO as GPIO
 import time
-from flask import Flask, render_template
+from admin_ops import write_timeset, load_json, refresh_cron
+from flask import Flask, render_template, request
+from switch import turnon
 
-channel = {
-  'lock': 17,
-  'magnet': 27
-}
+channel = load_json('/home/droeli/heuschrank/channels.json')
+
+GPIO.setmode(GPIO.BCM)
+
+unlock_times = load_json('/home/droeli/heuschrank/timeset.json')
 
 app = Flask(__name__)
 
-def turnon(relay):
-  GPIO.setmode(GPIO.BCM)
-  GPIO.setup(channel[relay], GPIO.OUT)
-  GPIO.output(channel[relay], GPIO.HIGH)
-  time.sleep(2)
-  GPIO.output(channel[relay], GPIO.LOW)
-  GPIO.cleanup()
-
 @app.route('/')
 def index():
-  return render_template('index.html', infotext='Press a button!')
+  return render_template('index.html', infotext='Manually release a lock or change times', unlock_times=unlock_times)
 
 @app.route('/<relay>/on')
 def goon(relay):
-  turnon(relay)
-  return render_template('index.html', infotext='turned on ' + relay)
+  turnon(channel[relay])
+  return render_template('index.html', infotext='turned on ' + relay, unlock_times=unlock_times)
+
+@app.route('/settime/', methods=['POST'])
+def settime():
+  time_top = request.form['time_top']
+  time_middle = request.form['time_middle']
+  time_bottom = request.form['time_bottom']
+  unlock_times = {
+    "time_top": time_top,
+    "time_middle": time_middle,
+    "time_bottom": time_bottom
+  }
+  write_timeset(unlock_times)
+  refresh_cron()
+  return render_template('index.html', infotext='Times set!', unlock_times=unlock_times)
+  
 
 
 app.run(host='0.0.0.0', port=80)
-
+GPIO.cleanup()

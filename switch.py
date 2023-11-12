@@ -1,12 +1,17 @@
 import RPi.GPIO as GPIO
+import sys
 import time
+from admin_ops import write_timeset, load_json, refresh_cron
 
-channel = 27
+def turnon(relay):
+  GPIO.setmode(GPIO.BCM)
+  GPIO.setup(relay, GPIO.OUT)
+  GPIO.output(relay, GPIO.HIGH)
+  time.sleep(2)
+  GPIO.output(relay, GPIO.LOW)
+  GPIO.cleanup()
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(channel, GPIO.OUT)
-
-GPIO.output(channel, GPIO.HIGH)
-time.sleep(4)
-GPIO.output(channel, GPIO.LOW)
-GPIO.cleanup()
+if __name__ == "__main__":
+  channels = load_json('/home/droeli/heuschrank/channels.json')
+  turnon(channels[sys.argv[1]])
+  print('turned on',sys.argv[1],'for 2 seconds')

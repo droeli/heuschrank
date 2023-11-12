@@ -6,8 +6,30 @@
 </head>
 <body>
     <h1>Heuschrank Alpha</h1>
-    <form action="{{ url_for('goon', relay='lock')}}"><input type="submit" value="Schloss"></form>
-    <form action="{{ url_for('goon', relay='magnet')}}"><input type="submit" value="Magnet"></form>
     <h3>{{ infotext }}</h3>
+    <form action="{{ url_for('goon', relay='rel_one')}}"><input type="submit" value="Top"></form>
+    <form action="{{ url_for('goon', relay='rel_two')}}"><input type="submit" value="Middle"></form>
+    <form action="{{ url_for('goon', relay='rel_three')}}"><input type="submit" value="Bottom"></form>
+    <form action="{{ url_for('settime') }}" method="POST">
+    <table>
+      <tr>
+        <th>Release</th>
+        <th>Time</th>
+      </tr>
+      <tr>
+        <td>Top</td>
+        <td><input value='{{ unlock_times['time_top'] }}' type="text" name="time_top"/></td>
+      </tr>
+      <tr>
+        <td>Middle</td>
+        <td><input value='{{ unlock_times['time_middle'] }}' type="text" name="time_middle"/></td>
+      </tr>
+      <tr>
+        <td>Bottom</td>
+        <td><input value='{{ unlock_times['time_bottom'] }}' type="text" name="time_bottom"/></td>
+      </tr>
+    </table>
+    <input type="submit" value="Set Times"/>
+    </form>
 </body>
 </html>
