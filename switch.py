@@ -1,17 +1,12 @@
 import RPi.GPIO as GPIO
+import subprocess
 import sys
 import time
 from admin_ops import write_timeset, load_json, refresh_cron
 
-def turnon(relay):
-  GPIO.setmode(GPIO.BCM)
-  GPIO.setup(relay, GPIO.OUT)
-  GPIO.output(relay, GPIO.HIGH)
-  time.sleep(2)
-  GPIO.output(relay, GPIO.LOW)
-  GPIO.cleanup()
-
 if __name__ == "__main__":
-  channels = load_json('/home/droeli/heuschrank/channels.json')
-  turnon(channels[sys.argv[1]])
+  channels = load_json('/home/hs/heuschrank/channels.json')
+  subprocess.run(['/usr/bin/python3', '/home/hs/heuschrank/audio.py', sys.argv[1]])
+  #turnon(channels[sys.argv[1]])
+  subprocess.run(['/usr/bin/sudo', '/usr/bin/python3', '/home/hs/heuschrank/admin_ops.py', 'turnon', str(channels[sys.argv[1]])])
   print('turned on',sys.argv[1],'for 2 seconds')
