@@ -21,3 +21,10 @@
 * channels.json: Welches "relay" an welches GPIO
 * timeset.json: Welches "tray" wird um welche Zeit ausgelöst?
 * tray_to_relay.json: Welches "tray" ist mit welchem relay verbunden?
+
+Tipps:
+
+bluetoothctl
+pactl list sinks short
+pactl set-sink-volume 2 100%
+
