@@ -1,0 +1,14 @@
+[Unit]
+Description=Heuschrank Webservice
+
+[Service]
+Type=simple
+Environment=PYTHON_PATH=/home/hs/heuschrank XDG_RUNTIME_DIR=/run/user/1000
+ExecStartPre=/home/hs/heuschrank/connect_speaker.sh
+ExecStart=/usr/bin/python3 /home/hs/heuschrank/hs.py
+User=hs
+Restart=always
+WorkingDirectory=/home/hs/heuschrank
+
+[Install]
+WantedBy=multi-user.target
