@@ -17,7 +17,7 @@ def refresh_cron():
   cron_template = """
 XDG_RUNTIME_DIR=/run/user/1000
 {% for relay, hour, minute in activation_times %}
-{{ minute }} {{ hour }} * * * hs /usr/bin/python3 /home/hs/heuschrank/switch.py {{ relay }} >> /home/hs/heuschrank/activity.log 2>&1
+{{ minute }} {{ hour }} * * * hs /usr/bin/python3 /home/hs/heuschrank/switch.py {{ relay }}
 {% endfor %}
 """
   template = environment.from_string(cron_template)
