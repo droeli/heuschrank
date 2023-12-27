@@ -10,16 +10,17 @@ channel = load_json('/home/hs/heuschrank/channels.json')
 
 GPIO.setmode(GPIO.BCM)
 
-unlock_times = load_json('/home/hs/heuschrank/timeset.json')
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
+  unlock_times = load_json('/home/hs/heuschrank/timeset.json')
   return render_template('index.html', infotext='Manually release a lock or change times', unlock_times=unlock_times)
 
 @app.route('/<relay>/on')
 def goon(relay):
+  unlock_times = load_json('/home/hs/heuschrank/timeset.json')
   subprocess.run(['/usr/bin/python3', 'switch.py', relay])
   return render_template('index.html', infotext='turned on ' + relay, unlock_times=unlock_times)
 
@@ -35,6 +36,7 @@ def settime():
   }
   write_timeset(unlock_times)
   subprocess.run(['/usr/bin/sudo', '/usr/bin/python3', 'admin_ops.py', 'refresh_cron'])
+  unlock_times = load_json('/home/hs/heuschrank/timeset.json')
   return render_template('index.html', infotext='Times set!', unlock_times=unlock_times)
   
 
